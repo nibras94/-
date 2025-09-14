@@ -45,14 +45,14 @@
         .container:hover {
             transform: translateY(-5px);
         }
-        
+
         h2 {
             font-size: 2rem;
             color: var(--primary-color);
             margin-bottom: 15px;
             position: relative;
         }
-        
+
         h2::after {
             content: '';
             position: absolute;
@@ -88,8 +88,15 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
             white-space: nowrap;
         }
+        
+        button:disabled {
+            background-color: #ccc !important;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
-        button:hover {
+        button:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -98,8 +105,8 @@
             background: var(--secondary-color);
             color: white;
         }
-        
-        #check-in-btn:hover {
+
+        #check-in-btn:hover:not(:disabled) {
             background-color: #1e7e34;
         }
 
@@ -107,9 +114,18 @@
             background: var(--danger-color);
             color: white;
         }
-        
-        #check-out-btn:hover {
+
+        #check-out-btn:hover:not(:disabled) {
             background-color: #c82333;
+        }
+        
+        #check-location-btn {
+            background-color: var(--primary-color);
+            color: white;
+            margin-bottom: 15px;
+        }
+        #check-location-btn:hover {
+            background-color: #0056b3;
         }
 
         #logout-btn {
@@ -117,8 +133,8 @@
             color: #fff;
             margin-top: 20px;
         }
-        
-        #logout-btn:hover {
+
+        #logout-btn:hover:not(:disabled) {
             background-color: #5a6268;
         }
 
@@ -170,14 +186,14 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
-        
+
         .location-placeholder::before {
             content: '📍';
             font-size: 3rem;
             margin-bottom: 10px;
             animation: pulse 2s infinite;
         }
-        
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -189,10 +205,11 @@
 
 <div class="container">
     <h2>تسجيل الحضور والانصراف</h2>
-    <p>اضغط على الزر المناسب لتسجيل حضورك أو انصرافك.</p>
+    <p>اضغط على زر "تحديد موقعي" أولاً، ثم سجل حضورك أو انصرافك.</p>
+    <button id="check-location-btn">تحديد موقعي</button>
     <div class="btn-group">
-        <button id="check-in-btn">تسجيل حضور</button>
-        <button id="check-out-btn">تسجيل انصراف</button>
+        <button id="check-in-btn" disabled>تسجيل حضور</button>
+        <button id="check-out-btn" disabled>تسجيل انصراف</button>
     </div>
     <div id="status-message"></div>
     <div class="location-placeholder">موقع الشركة</div>
@@ -218,8 +235,25 @@
 
     const checkInBtn = document.getElementById('check-in-btn');
     const checkOutBtn = document.getElementById('check-out-btn');
+    const checkLocationBtn = document.getElementById('check-location-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const statusMessage = document.getElementById('status-message');
+
+    // وظيفة لحساب المسافة بين نقطتين بالإحداثيات
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371e3; // نصف قطر الأرض بالمتر
+        const φ1 = lat1 * Math.PI / 180;
+        const φ2 = lat2 * Math.PI / 180;
+        const Δφ = (lat2 - lat1) * Math.PI / 180;
+        const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+        const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                  Math.cos(φ1) * Math.cos(φ2) *
+                  Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c; // المسافة بالمتر
+    }
 
     // وظيفة لعرض الرسائل بشكل ديناميكي
     function showMessage(message, type) {
@@ -265,7 +299,7 @@
                 return;
             }
         }
-        
+
         // تسجيل الخروج
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
@@ -273,8 +307,65 @@
             });
         });
 
+        // وظيفة التحقق من الموقع الجغرافي
+        checkLocationBtn.addEventListener('click', () => {
+            showMessage("جارٍ التحقق من الموقع...", "loading");
+            checkInBtn.disabled = true;
+            checkOutBtn.disabled = true;
+            
+            getGeolocation(async (error) => {
+                if (error) {
+                    showMessage(error, 'error');
+                } else {
+                    showMessage('تم تأكيد موقعك بنجاح ✅. يمكنك الآن تسجيل الحضور/الانصراف.', 'success');
+                    checkInBtn.disabled = false;
+                    checkOutBtn.disabled = false;
+                }
+            });
+        });
+
+        // وظيفة جلب الموقع الجغرافي للمستخدم
+        function getGeolocation(callback) {
+            db.collection('settings').doc('office_location').get().then(doc => {
+                if (!doc.exists) {
+                    callback('لم يتم تحديد إحداثيات المكتب.');
+                    return;
+                }
+                const officeData = doc.data();
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const userLat = position.coords.latitude;
+                            const userLon = position.coords.longitude;
+                            const distance = calculateDistance(officeData.latitude, officeData.longitude, userLat, userLon);
+
+                            if (distance <= officeData.radius) {
+                                callback(null, 'ok'); // الموقع صحيح
+                            } else {
+                                callback('الموقع خارج نطاق الشركة');
+                            }
+                        },
+                        (error) => {
+                            let errorMessage = 'لا يمكن الحصول على الموقع الجغرافي.';
+                            if (error.code === error.PERMISSION_DENIED) {
+                                errorMessage = 'يجب السماح للوصول إلى الموقع الجغرافي.';
+                            }
+                            callback(errorMessage);
+                        }
+                    );
+                } else {
+                    callback('متصفحك لا يدعم الموقع الجغرافي.');
+                }
+            }).catch(error => {
+                callback('خطأ في جلب إحداثيات المكتب.');
+            });
+        }
+
+
         // وظيفة تسجيل الحضور/الانصراف
         async function recordAttendance(type, button) {
+            // يتم التحقق من الموقع بالفعل عند الضغط على زر تحديد الموقع، لذلك لا حاجة لإعادة التحقق هنا.
             showMessage("جارٍ تسجيل العملية...", "loading");
             button.disabled = true;
 
