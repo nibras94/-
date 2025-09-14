@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الحضور والانصراف</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --danger-color: #dc3545;
+            --info-color: #6c757d;
+            --bg-body: #eef1f5;
+            --bg-container: #ffffff;
+            --text-color: #333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--bg-body);
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--bg-container);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 60px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        p {
+            margin-bottom: 25px;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #check-in-btn {
+            background: var(--secondary-color);
+            color: white;
+        }
+        
+        #check-in-btn:hover {
+            background-color: #1e7e34;
+        }
+
+        #check-out-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        #check-out-btn:hover {
+            background-color: #c82333;
+        }
+
+        #logout-btn {
+            background-color: var(--info-color);
+            color: #fff;
+            margin-top: 20px;
+        }
+        
+        #logout-btn:hover {
+            background-color: #5a6268;
+        }
+
+        #status-message {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .location-placeholder {
+            width: 100%;
+            height: 200px;
+            margin-top: 25px;
+            background: linear-gradient(135deg, var(--secondary-color), #81C784);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .location-placeholder::before {
+            content: '📍';
+            font-size: 3rem;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>تسجيل الحضور والانصراف</h2>
+    <p>اضغط على الزر المناسب لتسجيل حضورك أو انصرافك.</p>
+    <div class="btn-group">
+        <button id="check-in-btn">تسجيل حضور</button>
+        <button id="check-out-btn">تسجيل انصراف</button>
+    </div>
+    <div id="status-message"></div>
+    <div class="location-placeholder">موقع الشركة</div>
+    <button id="logout-btn">تسجيل خروج</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
+        authDomain: "attendance-system-65084.firebaseapp.com",
+        projectId: "attendance-system-65084",
+        storageBucket: "attendance-system-65084.firebasestorage.app",
+        messagingSenderId: "918305105898",
+        appId: "1:918305105898:web:94cf532638acdfbbc27493"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const checkInBtn = document.getElementById('check-in-btn');
+    const checkOutBtn = document.getElementById('check-out-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const statusMessage = document.getElementById('status-message');
+
+    // وظيفة لعرض الرسائل بشكل ديناميكي
+    function showMessage(message, type) {
+        statusMessage.style.display = "block";
+        statusMessage.textContent = message;
+        statusMessage.className = "";
+        statusMessage.classList.add(type);
+    }
+
+    // حساب الوقت المتبقي
+    function startCountdown(button, targetTime) {
+        const interval = setInterval(() => {
+            const now = new Date();
+            let diff = Math.floor((targetTime - now) / 1000);
+            if (diff <= 0) {
+                button.disabled = false;
+                button.textContent = button.getAttribute('data-original-text');
+                clearInterval(interval);
+                showMessage("🔔 يمكنك الآن تسجيل الحضور/الانصراف.", "success");
+            } else {
+                const hours = Math.floor(diff / 3600);
+                const minutes = Math.floor((diff % 3600) / 60);
+                const seconds = diff % 60;
+                button.textContent = `${hours}س ${minutes}د ${seconds}ث لإعادة التفعيل`;
+            }
+        }, 1000);
+    }
+
+    // مراقبة حالة تسجيل الدخول
+    firebase.auth().onAuthStateChanged(async user => {
+        if (!user) {
+            window.location.href = "index.html";
+            return;
+        }
+        const userId = user.uid;
+
+        // التحقق من دور المستخدم وتوجيهه إذا كان مديراً
+        const userDoc = await db.collection('users').doc(userId).get();
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+            if (userData.role === 'admin') {
+                window.location.href = 'admin.html';
+                return;
+            }
+        }
+        
+        // تسجيل الخروج
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        });
+
+        // وظيفة تسجيل الحضور/الانصراف
+        async function recordAttendance(type, button) {
+            showMessage("جارٍ تسجيل العملية...", "loading");
+            button.disabled = true;
+
+            const lastDocRef = db.collection("last_attendance").doc(userId);
+            const lastDocSnap = await lastDocRef.get();
+            const now = new Date();
+
+            if (lastDocSnap.exists) {
+                const data = lastDocSnap.data();
+                const lastTime = data[type];
+                if (lastTime) {
+                    const lastDate = lastTime.toDate();
+                    const hoursDiff = (now - lastDate) / 1000 / 3600;
+                    if (hoursDiff < 10) {
+                        const targetTime = new Date(lastDate.getTime() + 10 * 60 * 60 * 1000);
+                        startCountdown(button, targetTime);
+                        showMessage(`⚠️ لقد قمت بتسجيل ${type} بالفعل. سيتم إعادة التفعيل بعد 10 ساعات.`, "error");
+                        return;
+                    }
+                }
+            }
+
+            await db.collection("attendance_log").add({
+                userId,
+                type,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            await lastDocRef.set({
+                [type]: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            showMessage(`تم تسجيل ${type} بنجاح ✅`, "success");
+
+            const targetTime = new Date(now.getTime() + 10 * 60 * 60 * 1000);
+            button.setAttribute('data-original-text', button.textContent);
+            startCountdown(button, targetTime);
+        }
+
+        checkInBtn.addEventListener('click', () => recordAttendance('حضور', checkInBtn));
+        checkOutBtn.addEventListener('click', () => recordAttendance('انصراف', checkOutBtn));
+    });
+</script>
+
+</body>
+</html>

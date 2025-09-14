@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة إدارة الموظفين</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #007bff;
+            --bg-body: #eef1f5;
+            --bg-container: #ffffff;
+            --text-color: #333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--bg-container);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .container h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-right: 4px solid var(--secondary-color);
+            padding-right: 10px;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #logout-btn {
+            background-color: var(--danger-color);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        #logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        select {
+            flex: 1 1 200px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-add {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        .btn-edit {
+            background-color: var(--warning-color);
+            color: var(--text-color);
+        }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: #fff;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .btn-show {
+            background-color: var(--info-color);
+            color: #fff;
+        }
+
+        .btn-show:hover {
+            background-color: #0069d9;
+        }
+
+        #employee-count {
+            background-color: #f0f2f5;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #555;
+            margin-right: auto;
+        }
+
+        #employees-list {
+            margin-top: 20px;
+            display: none; /* Default state is hidden */
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .employee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            border-right: 5px solid var(--primary-color);
+        }
+
+        .employee-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Attendance Reports Table */
+        .attendance-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #prev-day, #next-day {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        #prev-day:hover, #next-day:hover {
+            background-color: #5a6268;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            background-color: #fff;
+            padding: 15px;
+            text-align: right;
+        }
+
+        thead tr th {
+            background-color: #f0f2f5;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        tbody tr {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        tbody tr:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .header-section {
+                flex-direction: column-reverse;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            #logout-btn {
+                width: 100%;
+                text-align: center;
+            }
+            .container h2 {
+                font-size: 1.5rem;
+            }
+            .form-group {
+                flex-direction: column;
+            }
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="date"],
+            select {
+                width: 100%;
+            }
+            button {
+                width: 100%;
+            }
+            .attendance-controls {
+                flex-direction: column;
+            }
+            #employee-count {
+                width: 100%;
+                text-align: center;
+                margin-right: 0;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 15px;
+                border-radius: 12px;
+                overflow: hidden;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-right: 50%;
+                text-align: left;
+                background: #fff;
+            }
+            td:before {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 45%;
+                padding: 15px;
+                white-space: nowrap;
+                font-weight: bold;
+                content: attr(data-label);
+                text-align: right;
+                background: #f0f2f5;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <h2>إدارة الموظفين 👨‍💼</h2>
+        <button id="logout-btn">تسجيل خروج 🚪</button>
+    </div>
+    <div class="form-group">
+        <input type="text" id="employee-name" placeholder="اسم الموظف">
+        <input type="email" id="employee-email" placeholder="البريد الإلكتروني">
+        <input type="password" id="employee-password" placeholder="كلمة المرور">
+        <select id="employee-role">
+            <option value="employee">موظف </option>
+            <option value="admin">مدير</option>
+        </select>
+        <button id="add-employee-btn" class="btn-add">إضافة موظف ➕</button>
+    </div>
+    <hr>
+    <div class="header-section">
+        <button id="show-employees-btn" class="btn-show">عرض الموظفين 📜</button>
+        <span id="employee-count"></span>
+    </div>
+    <div id="employees-list"></div>
+</div>
+
+<div class="container">
+    <h2>تقارير الحضور 📊</h2>
+    <div class="attendance-controls">
+        <button id="prev-day">◀ اليوم السابق</button>
+        <input type="date" id="date-filter">
+        <button id="next-day">اليوم التالي ▶</button>
+        <button id="filter-btn" class="btn-show">عرض التقرير</button>
+    </div>
+    <table id="attendance-table">
+        <thead>
+            <tr>
+                <th>اسم الموظف</th>
+                <th>التاريخ</th>
+                <th>وقت الحضور</th>
+                <th>وقت الانصراف</th>
+                <th>إجمالي ساعات العمل</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
+        authDomain: "attendance-system-65084.firebaseapp.com",
+        projectId: "attendance-system-65084",
+        storageBucket: "attendance-system-65084.firebasestorage.app",
+        messagingSenderId: "918305105898",
+        appId: "1:918305105898:web:94cf532638acdfbbc27493"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
+
+    // إضافة موظف
+    document.getElementById('add-employee-btn').addEventListener('click', async () => {
+        const name = document.getElementById('employee-name').value.trim();
+        const email = document.getElementById('employee-email').value.trim();
+        const password = document.getElementById('employee-password').value.trim();
+        const role = document.getElementById('employee-role').value;
+        if (!name || !email || !password) {
+            alert('يرجى تعبئة جميع الحقول');
+            return;
+        }
+        try {
+            const userCred = await auth.createUserWithEmailAndPassword(email, password);
+            await db.collection('users').doc(userCred.user.uid).set({
+                name,
+                email,
+                role,
+                salary: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert('تم إضافة الموظف ✅');
+            document.getElementById('employee-name').value = '';
+            document.getElementById('employee-email').value = '';
+            document.getElementById('employee-password').value = '';
+            showEmployees();
+        } catch (err) {
+            alert('خطأ: ' + err.message);
+        }
+    });
+
+    // عرض/إخفاء الموظفين
+    const employeesListDiv = document.getElementById('employees-list');
+    const employeeCountSpan = document.getElementById('employee-count');
+    document.getElementById('show-employees-btn').addEventListener('click', () => {
+        // Toggle the visibility of the employees list
+        if (employeesListDiv.style.display === 'flex') {
+            employeesListDiv.style.display = 'none';
+        } else {
+            showEmployees();
+        }
+    });
+
+    async function showEmployees() {
+        const snapshot = await db.collection('users').get();
+        employeesListDiv.innerHTML = '';
+        employeeCountSpan.textContent = `عدد الموظفين: ${snapshot.size}`;
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            const div = document.createElement('div');
+            div.className = 'employee-item';
+            div.innerHTML = `
+                <span>${user.name} (${user.email}) - الدور: ${user.role}</span>
+                <div class="employee-item-actions">
+                    <button class="btn-edit">تعديل</button>
+                    <button class="btn-delete">حذف</button>
+                </div>
+            `;
+            const editBtn = div.querySelector('.btn-edit');
+            const delBtn = div.querySelector('.btn-delete');
+
+            editBtn.addEventListener('click', async () => {
+                const newName = prompt("ادخل الاسم الجديد:", user.name);
+                if (newName) {
+                    await db.collection('users').doc(doc.id).update({ name: newName });
+                }
+                const newPassword = prompt("ادخل كلمة مرور جديدة (اتركه فارغ إذا لا تريد التغيير):");
+                if (newPassword) {
+                    const userForUpdate = firebase.auth().currentUser;
+                    if (userForUpdate && userForUpdate.email === user.email) {
+                        userForUpdate.updatePassword(newPassword)
+                            .then(() => alert('تم تحديث كلمة المرور.'))
+                            .catch(e => console.log(e));
+                    } else {
+                        alert("لا يمكنك تحديث كلمة مرور مستخدم آخر مباشرة بهذه الطريقة.");
+                    }
+                }
+                showEmployees();
+            });
+
+            delBtn.addEventListener('click', async () => {
+                if (confirm(`هل تريد حذف الموظف ${user.name}؟`)) {
+                    await db.collection('users').doc(doc.id).delete();
+                    showEmployees();
+                }
+            });
+
+            employeesListDiv.appendChild(div);
+        });
+        employeesListDiv.style.display = 'flex'; // Show the list after fetching data
+    }
+
+    // تقارير الحضور
+    const attendanceTableBody = document.querySelector('#attendance-table tbody');
+    const dateFilterInput = document.getElementById('date-filter');
+    const filterBtn = document.getElementById('filter-btn');
+    const prevDayBtn = document.getElementById('prev-day');
+    const nextDayBtn = document.getElementById('next-day');
+
+    let selectedDate = new Date();
+
+    function updateDateInput() {
+        dateFilterInput.value = selectedDate.toISOString().split('T')[0];
+    }
+
+    window.addEventListener('load', () => {
+        updateDateInput();
+        fetchReports(selectedDate);
+    });
+
+    prevDayBtn.addEventListener('click', () => {
+        selectedDate.setDate(selectedDate.getDate() - 1);
+        updateDateInput();
+        fetchReports(selectedDate);
+    });
+    nextDayBtn.addEventListener('click', () => {
+        selectedDate.setDate(selectedDate.getDate() + 1);
+        updateDateInput();
+        fetchReports(selectedDate);
+    });
+    filterBtn.addEventListener('click', () => {
+        const dateVal = new Date(dateFilterInput.value);
+        if (dateVal) {
+            selectedDate = dateVal;
+            fetchReports(selectedDate);
+        }
+    });
+
+    async function fetchReports(date) {
+        attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">جارٍ تحميل البيانات...</td></tr>';
+        const usersSnap = await db.collection('users').get();
+        const usersData = {};
+        usersSnap.forEach(doc => usersData[doc.id] = doc.data());
+
+        const start = new Date(date);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(date);
+        end.setHours(23, 59, 59, 999);
+
+        const attendanceSnap = await db.collection('attendance_log')
+            .where('timestamp', '>=', start)
+            .where('timestamp', '<=', end)
+            .orderBy('timestamp', 'desc').get();
+
+        const attendanceByEmployee = {};
+        attendanceSnap.forEach(doc => {
+            const data = doc.data();
+            const uid = data.userId;
+            if (!attendanceByEmployee[uid]) attendanceByEmployee[uid] = {
+                'حضور': null,
+                'انصراف': null
+            };
+            if (data.type === 'حضور' && !attendanceByEmployee[uid]['حضور'])
+                attendanceByEmployee[uid]['حضور'] = new Date(data.timestamp.toDate());
+            else if (data.type === 'انصراف' && !attendanceByEmployee[uid]['انصراف'])
+                attendanceByEmployee[uid]['انصراف'] = new Date(data.timestamp.toDate());
+        });
+
+        attendanceTableBody.innerHTML = '';
+        if (Object.keys(attendanceByEmployee).length === 0) {
+            attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">لا توجد بيانات حضور لهذا اليوم.</td></tr>';
+        } else {
+            for (const uid in attendanceByEmployee) {
+                const userData = usersData[uid] || { name: 'غير معروف' };
+                const row = document.createElement('tr');
+                const checkIn = attendanceByEmployee[uid]['حضور'];
+                const checkOut = attendanceByEmployee[uid]['انصراف'];
+                let totalHours = '-';
+                if (checkIn && checkOut) {
+                    const diffMs = checkOut - checkIn;
+                    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                    totalHours = `${hours} ساعة و ${minutes} دقيقة`;
+                }
+                row.innerHTML = `
+                    <td data-label="اسم الموظف">${userData.name}</td>
+                    <td data-label="التاريخ">${date.toISOString().split('T')[0]}</td>
+                    <td data-label="وقت الحضور">${checkIn ? checkIn.toLocaleTimeString('ar-EG') : '-'}</td>
+                    <td data-label="وقت الانصراف">${checkOut ? checkOut.toLocaleTimeString('ar-EG') : '-'}</td>
+                    <td data-label="إجمالي ساعات العمل">${totalHours}</td>
+                `;
+                attendanceTableBody.appendChild(row);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
