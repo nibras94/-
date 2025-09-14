@@ -76,7 +76,7 @@
             margin-bottom: 20px;
             align-items: center;
         }
-        
+
         input[type="text"],
         input[type="email"],
         input[type="password"],
@@ -90,7 +90,7 @@
             font-size: 1rem;
             font-family: 'Cairo', sans-serif;
         }
-        
+
         input[type="text"]:focus,
         input[type="email"]:focus,
         input[type="password"]:focus,
@@ -192,12 +192,14 @@
             margin-bottom: 20px;
         }
 
-        #prev-day, #next-day {
+        #prev-day,
+        #next-day {
             background-color: #6c757d;
             color: #fff;
         }
 
-        #prev-day:hover, #next-day:hover {
+        #prev-day:hover,
+        #next-day:hover {
             background-color: #5a6268;
         }
 
@@ -206,12 +208,13 @@
             border-collapse: separate;
             border-spacing: 0 10px;
             margin-top: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             border-radius: 12px;
             overflow: hidden;
         }
 
-        th, td {
+        th,
+        td {
             background-color: #fff;
             padding: 15px;
             text-align: right;
@@ -227,10 +230,10 @@
         tbody tr {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
+
         tbody tr:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive Design */
@@ -238,24 +241,30 @@
             body {
                 padding: 15px;
             }
+
             .container {
                 padding: 20px;
             }
+
             .header-section {
                 flex-direction: column-reverse;
                 align-items: flex-start;
                 gap: 15px;
             }
+
             #logout-btn {
                 width: 100%;
                 text-align: center;
             }
+
             .container h2 {
                 font-size: 1.5rem;
             }
+
             .form-group {
                 flex-direction: column;
             }
+
             input[type="text"],
             input[type="email"],
             input[type="password"],
@@ -263,31 +272,43 @@
             select {
                 width: 100%;
             }
+
             button {
                 width: 100%;
             }
+
             .attendance-controls {
                 flex-direction: column;
             }
+
             #employee-count {
                 width: 100%;
                 text-align: center;
                 margin-right: 0;
             }
-            table, thead, tbody, th, td, tr {
+
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
                 display: block;
             }
+
             thead tr {
                 position: absolute;
                 top: -9999px;
                 left: -9999px;
             }
+
             tr {
                 border: 1px solid #ccc;
                 margin-bottom: 15px;
                 border-radius: 12px;
                 overflow: hidden;
             }
+
             td {
                 border: none;
                 position: relative;
@@ -295,6 +316,7 @@
                 text-align: left;
                 background: #fff;
             }
+
             td:before {
                 position: absolute;
                 top: 0;
@@ -310,257 +332,320 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
-<div class="container">
-    <div class="header-section">
-        <h2>إدارة الموظفين 👨‍💼</h2>
-        <button id="logout-btn">تسجيل خروج 🚪</button>
+    <div class="container">
+        <div class="header-section">
+            <h2>إدارة الموظفين 👨‍💼</h2>
+            <button id="logout-btn">تسجيل خروج 🚪</button>
+        </div>
+        <div class="form-group">
+            <input type="text" id="employee-name" placeholder="اسم الموظف">
+            <input type="email" id="employee-email" placeholder="البريد الإلكتروني">
+            <input type="password" id="employee-password" placeholder="كلمة المرور">
+            <select id="employee-role">
+                <option value="employee">موظف </option>
+                <option value="admin">مدير</option>
+            </select>
+            <button id="add-employee-btn" class="btn-add">إضافة موظف ➕</button>
+        </div>
+        <hr>
+        <h2>إدارة إحداثيات الموقع 📍</h2>
+        <div class="form-group">
+            <input type="text" id="office-latitude" placeholder="خط العرض (Latitude)">
+            <input type="text" id="office-longitude" placeholder="خط الطول (Longitude)">
+            <input type="number" id="proximity-radius" placeholder="نصف القطر المسموح به (متر)" value="50">
+            <button id="save-location-btn" class="btn-add">حفظ الإحداثيات</button>
+        </div>
+        <hr>
+
+        <div class="header-section">
+            <button id="show-employees-btn" class="btn-show">عرض الموظفين 📜</button>
+            <span id="employee-count"></span>
+        </div>
+        <div id="employees-list"></div>
     </div>
-    <div class="form-group">
-        <input type="text" id="employee-name" placeholder="اسم الموظف">
-        <input type="email" id="employee-email" placeholder="البريد الإلكتروني">
-        <input type="password" id="employee-password" placeholder="كلمة المرور">
-        <select id="employee-role">
-            <option value="employee">موظف </option>
-            <option value="admin">مدير</option>
-        </select>
-        <button id="add-employee-btn" class="btn-add">إضافة موظف ➕</button>
+
+    <div class="container">
+        <h2>تقارير الحضور 📊</h2>
+        <div class="attendance-controls">
+            <button id="prev-day">◀ اليوم السابق</button>
+            <input type="date" id="date-filter">
+            <button id="next-day">اليوم التالي ▶</button>
+            <button id="filter-btn" class="btn-show">عرض التقرير</button>
+        </div>
+        <table id="attendance-table">
+            <thead>
+                <tr>
+                    <th>اسم الموظف</th>
+                    <th>التاريخ</th>
+                    <th>وقت الحضور</th>
+                    <th>وقت الانصراف</th>
+                    <th>إجمالي ساعات العمل</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-    <hr>
-    <div class="header-section">
-        <button id="show-employees-btn" class="btn-show">عرض الموظفين 📜</button>
-        <span id="employee-count"></span>
-    </div>
-    <div id="employees-list"></div>
-</div>
 
-<div class="container">
-    <h2>تقارير الحضور 📊</h2>
-    <div class="attendance-controls">
-        <button id="prev-day">◀ اليوم السابق</button>
-        <input type="date" id="date-filter">
-        <button id="next-day">اليوم التالي ▶</button>
-        <button id="filter-btn" class="btn-show">عرض التقرير</button>
-    </div>
-    <table id="attendance-table">
-        <thead>
-            <tr>
-                <th>اسم الموظف</th>
-                <th>التاريخ</th>
-                <th>وقت الحضور</th>
-                <th>وقت الانصراف</th>
-                <th>إجمالي ساعات العمل</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
-        authDomain: "attendance-system-65084.firebaseapp.com",
-        projectId: "attendance-system-65084",
-        storageBucket: "attendance-system-65084.firebasestorage.app",
-        messagingSenderId: "918305105898",
-        appId: "1:918305105898:web:94cf532638acdfbbc27493"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-
-    // إضافة موظف
-    document.getElementById('add-employee-btn').addEventListener('click', async () => {
-        const name = document.getElementById('employee-name').value.trim();
-        const email = document.getElementById('employee-email').value.trim();
-        const password = document.getElementById('employee-password').value.trim();
-        const role = document.getElementById('employee-role').value;
-        if (!name || !email || !password) {
-            alert('يرجى تعبئة جميع الحقول');
-            return;
-        }
-        try {
-            const userCred = await auth.createUserWithEmailAndPassword(email, password);
-            await db.collection('users').doc(userCred.user.uid).set({
-                name,
-                email,
-                role,
-                salary: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert('تم إضافة الموظف ✅');
-            document.getElementById('employee-name').value = '';
-            document.getElementById('employee-email').value = '';
-            document.getElementById('employee-password').value = '';
-            showEmployees();
-        } catch (err) {
-            alert('خطأ: ' + err.message);
-        }
-    });
-
-    // عرض/إخفاء الموظفين
-    const employeesListDiv = document.getElementById('employees-list');
-    const employeeCountSpan = document.getElementById('employee-count');
-    document.getElementById('show-employees-btn').addEventListener('click', () => {
-        // Toggle the visibility of the employees list
-        if (employeesListDiv.style.display === 'flex') {
-            employeesListDiv.style.display = 'none';
-        } else {
-            showEmployees();
-        }
-    });
-
-    async function showEmployees() {
-        const snapshot = await db.collection('users').get();
-        employeesListDiv.innerHTML = '';
-        employeeCountSpan.textContent = `عدد الموظفين: ${snapshot.size}`;
-        snapshot.forEach(doc => {
-            const user = doc.data();
-            const div = document.createElement('div');
-            div.className = 'employee-item';
-            div.innerHTML = `
-                <span>${user.name} (${user.email}) - الدور: ${user.role}</span>
-                <div class="employee-item-actions">
-                    <button class="btn-edit">تعديل</button>
-                    <button class="btn-delete">حذف</button>
-                </div>
-            `;
-            const editBtn = div.querySelector('.btn-edit');
-            const delBtn = div.querySelector('.btn-delete');
-
-            editBtn.addEventListener('click', async () => {
-                const newName = prompt("ادخل الاسم الجديد:", user.name);
-                if (newName) {
-                    await db.collection('users').doc(doc.id).update({ name: newName });
-                }
-                const newPassword = prompt("ادخل كلمة مرور جديدة (اتركه فارغ إذا لا تريد التغيير):");
-                if (newPassword) {
-                    const userForUpdate = firebase.auth().currentUser;
-                    if (userForUpdate && userForUpdate.email === user.email) {
-                        userForUpdate.updatePassword(newPassword)
-                            .then(() => alert('تم تحديث كلمة المرور.'))
-                            .catch(e => console.log(e));
-                    } else {
-                        alert("لا يمكنك تحديث كلمة مرور مستخدم آخر مباشرة بهذه الطريقة.");
-                    }
-                }
-                showEmployees();
-            });
-
-            delBtn.addEventListener('click', async () => {
-                if (confirm(`هل تريد حذف الموظف ${user.name}؟`)) {
-                    await db.collection('users').doc(doc.id).delete();
-                    showEmployees();
-                }
-            });
-
-            employeesListDiv.appendChild(div);
-        });
-        employeesListDiv.style.display = 'flex'; // Show the list after fetching data
-    }
-
-    // تقارير الحضور
-    const attendanceTableBody = document.querySelector('#attendance-table tbody');
-    const dateFilterInput = document.getElementById('date-filter');
-    const filterBtn = document.getElementById('filter-btn');
-    const prevDayBtn = document.getElementById('prev-day');
-    const nextDayBtn = document.getElementById('next-day');
-
-    let selectedDate = new Date();
-
-    function updateDateInput() {
-        dateFilterInput.value = selectedDate.toISOString().split('T')[0];
-    }
-
-    window.addEventListener('load', () => {
-        updateDateInput();
-        fetchReports(selectedDate);
-    });
-
-    prevDayBtn.addEventListener('click', () => {
-        selectedDate.setDate(selectedDate.getDate() - 1);
-        updateDateInput();
-        fetchReports(selectedDate);
-    });
-    nextDayBtn.addEventListener('click', () => {
-        selectedDate.setDate(selectedDate.getDate() + 1);
-        updateDateInput();
-        fetchReports(selectedDate);
-    });
-    filterBtn.addEventListener('click', () => {
-        const dateVal = new Date(dateFilterInput.value);
-        if (dateVal) {
-            selectedDate = dateVal;
-            fetchReports(selectedDate);
-        }
-    });
-
-    async function fetchReports(date) {
-        attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">جارٍ تحميل البيانات...</td></tr>';
-        const usersSnap = await db.collection('users').get();
-        const usersData = {};
-        usersSnap.forEach(doc => usersData[doc.id] = doc.data());
-
-        const start = new Date(date);
-        start.setHours(0, 0, 0, 0);
-        const end = new Date(date);
-        end.setHours(23, 59, 59, 999);
-
-        const attendanceSnap = await db.collection('attendance_log')
-            .where('timestamp', '>=', start)
-            .where('timestamp', '<=', end)
-            .orderBy('timestamp', 'desc').get();
-
-        const attendanceByEmployee = {};
-        attendanceSnap.forEach(doc => {
-            const data = doc.data();
-            const uid = data.userId;
-            if (!attendanceByEmployee[uid]) attendanceByEmployee[uid] = {
-                'حضور': null,
-                'انصراف': null
-            };
-            if (data.type === 'حضور' && !attendanceByEmployee[uid]['حضور'])
-                attendanceByEmployee[uid]['حضور'] = new Date(data.timestamp.toDate());
-            else if (data.type === 'انصراف' && !attendanceByEmployee[uid]['انصراف'])
-                attendanceByEmployee[uid]['انصراف'] = new Date(data.timestamp.toDate());
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function(event) {
+            if (
+                event.key === 'F12' ||
+                (event.ctrlKey && event.key === 'u') ||
+                (event.ctrlKey && event.shiftKey && event.key === 'I')
+            ) {
+                event.preventDefault();
+            }
         });
 
-        attendanceTableBody.innerHTML = '';
-        if (Object.keys(attendanceByEmployee).length === 0) {
-            attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">لا توجد بيانات حضور لهذا اليوم.</td></tr>';
-        } else {
-            for (const uid in attendanceByEmployee) {
-                const userData = usersData[uid] || { name: 'غير معروف' };
-                const row = document.createElement('tr');
-                const checkIn = attendanceByEmployee[uid]['حضور'];
-                const checkOut = attendanceByEmployee[uid]['انصراف'];
-                let totalHours = '-';
-                if (checkIn && checkOut) {
-                    const diffMs = checkOut - checkIn;
-                    const hours = Math.floor(diffMs / (1000 * 60 * 60));
-                    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                    totalHours = `${hours} ساعة و ${minutes} دقيقة`;
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
+            authDomain: "attendance-system-65084.firebaseapp.com",
+            projectId: "attendance-system-65084",
+            storageBucket: "attendance-system-65084.firebasestorage.app",
+            messagingSenderId: "918305105898",
+            appId: "1:918305105898:web:94cf532638acdfbbc27493"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const logoutBtn = document.getElementById('logout-btn');
+        const saveLocationBtn = document.getElementById('save-location-btn');
+        const officeLatitudeInput = document.getElementById('office-latitude');
+        const officeLongitudeInput = document.getElementById('office-longitude');
+        const proximityRadiusInput = document.getElementById('proximity-radius');
+
+        // وظيفة لحفظ إحداثيات الموقع
+        saveLocationBtn.addEventListener('click', async () => {
+            const lat = officeLatitudeInput.value.trim();
+            const lon = officeLongitudeInput.value.trim();
+            const radius = proximityRadiusInput.value;
+
+            if (!lat || !lon || !radius) {
+                alert('يرجى تعبئة جميع حقول الموقع.');
+                return;
+            }
+            try {
+                // حفظ الإحداثيات في وثيقة واحدة في Firestore
+                await db.collection('settings').doc('office_location').set({
+                    latitude: parseFloat(lat),
+                    longitude: parseFloat(lon),
+                    radius: parseInt(radius)
+                });
+                alert('تم حفظ إحداثيات الموقع بنجاح ✅');
+            } catch (err) {
+                alert('خطأ في حفظ الإحداثيات: ' + err.message);
+            }
+        });
+
+        // وظيفة لجلب إحداثيات الموقع عند تحميل الصفحة
+        async function getOfficeLocation() {
+            try {
+                const doc = await db.collection('settings').doc('office_location').get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    officeLatitudeInput.value = data.latitude;
+                    officeLongitudeInput.value = data.longitude;
+                    proximityRadiusInput.value = data.radius;
                 }
-                row.innerHTML = `
-                    <td data-label="اسم الموظف">${userData.name}</td>
-                    <td data-label="التاريخ">${date.toISOString().split('T')[0]}</td>
-                    <td data-label="وقت الحضور">${checkIn ? checkIn.toLocaleTimeString('ar-EG') : '-'}</td>
-                    <td data-label="وقت الانصراف">${checkOut ? checkOut.toLocaleTimeString('ar-EG') : '-'}</td>
-                    <td data-label="إجمالي ساعات العمل">${totalHours}</td>
-                `;
-                attendanceTableBody.appendChild(row);
+            } catch (err) {
+                console.error("خطأ في جلب إحداثيات الموقع:", err);
             }
         }
-    }
-</script>
+        
+        logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
+
+        // إضافة موظف
+        document.getElementById('add-employee-btn').addEventListener('click', async () => {
+            const name = document.getElementById('employee-name').value.trim();
+            const email = document.getElementById('employee-email').value.trim();
+            const password = document.getElementById('employee-password').value.trim();
+            const role = document.getElementById('employee-role').value;
+            if (!name || !email || !password) {
+                alert('يرجى تعبئة جميع الحقول');
+                return;
+            }
+            try {
+                const userCred = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCred.user.uid).set({
+                    name,
+                    email,
+                    role,
+                    salary: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('تم إضافة الموظف ✅');
+                document.getElementById('employee-name').value = '';
+                document.getElementById('employee-email').value = '';
+                document.getElementById('employee-password').value = '';
+                showEmployees();
+            } catch (err) {
+                alert('خطأ: ' + err.message);
+            }
+        });
+
+        // عرض/إخفاء الموظفين
+        const employeesListDiv = document.getElementById('employees-list');
+        const employeeCountSpan = document.getElementById('employee-count');
+        document.getElementById('show-employees-btn').addEventListener('click', () => {
+            if (employeesListDiv.style.display === 'flex') {
+                employeesListDiv.style.display = 'none';
+            } else {
+                showEmployees();
+            }
+        });
+
+        async function showEmployees() {
+            const snapshot = await db.collection('users').get();
+            employeesListDiv.innerHTML = '';
+            employeeCountSpan.textContent = `عدد الموظفين: ${snapshot.size}`;
+            snapshot.forEach(doc => {
+                const user = doc.data();
+                const div = document.createElement('div');
+                div.className = 'employee-item';
+                div.innerHTML = `
+                    <span>${user.name} (${user.email}) - الدور: ${user.role}</span>
+                    <div class="employee-item-actions">
+                        <button class="btn-edit">تعديل</button>
+                        <button class="btn-delete">حذف</button>
+                    </div>
+                `;
+                const editBtn = div.querySelector('.btn-edit');
+                const delBtn = div.querySelector('.btn-delete');
+
+                editBtn.addEventListener('click', async () => {
+                    const newName = prompt("ادخل الاسم الجديد:", user.name);
+                    if (newName) {
+                        await db.collection('users').doc(doc.id).update({ name: newName });
+                    }
+                    const newPassword = prompt("ادخل كلمة مرور جديدة (اتركه فارغ إذا لا تريد التغيير):");
+                    if (newPassword) {
+                        const userForUpdate = firebase.auth().currentUser;
+                        if (userForUpdate && userForUpdate.email === user.email) {
+                            userForUpdate.updatePassword(newPassword)
+                                .then(() => alert('تم تحديث كلمة المرور.'))
+                                .catch(e => console.log(e));
+                        } else {
+                            alert("لا يمكنك تحديث كلمة مرور مستخدم آخر مباشرة بهذه الطريقة.");
+                        }
+                    }
+                    showEmployees();
+                });
+
+                delBtn.addEventListener('click', async () => {
+                    if (confirm(`هل تريد حذف الموظف ${user.name}؟`)) {
+                        await db.collection('users').doc(doc.id).delete();
+                        showEmployees();
+                    }
+                });
+
+                employeesListDiv.appendChild(div);
+            });
+            employeesListDiv.style.display = 'flex'; // Show the list after fetching data
+        }
+
+        // تقارير الحضور
+        const attendanceTableBody = document.querySelector('#attendance-table tbody');
+        const dateFilterInput = document.getElementById('date-filter');
+        const filterBtn = document.getElementById('filter-btn');
+        const prevDayBtn = document.getElementById('prev-day');
+        const nextDayBtn = document.getElementById('next-day');
+
+        let selectedDate = new Date();
+
+        function updateDateInput() {
+            dateFilterInput.value = selectedDate.toISOString().split('T')[0];
+        }
+
+        window.addEventListener('load', () => {
+            getOfficeLocation(); // جلب إحداثيات الموقع عند تحميل الصفحة
+            updateDateInput();
+            fetchReports(selectedDate);
+        });
+
+        prevDayBtn.addEventListener('click', () => {
+            selectedDate.setDate(selectedDate.getDate() - 1);
+            updateDateInput();
+            fetchReports(selectedDate);
+        });
+        nextDayBtn.addEventListener('click', () => {
+            selectedDate.setDate(selectedDate.getDate() + 1);
+            updateDateInput();
+            fetchReports(selectedDate);
+        });
+        filterBtn.addEventListener('click', () => {
+            const dateVal = new Date(dateFilterInput.value);
+            if (dateVal) {
+                selectedDate = dateVal;
+                fetchReports(selectedDate);
+            }
+        });
+
+        async function fetchReports(date) {
+            attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">جارٍ تحميل البيانات...</td></tr>';
+            const usersSnap = await db.collection('users').get();
+            const usersData = {};
+            usersSnap.forEach(doc => usersData[doc.id] = doc.data());
+
+            const start = new Date(date);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(date);
+            end.setHours(23, 59, 59, 999);
+
+            const attendanceSnap = await db.collection('attendance_log')
+                .where('timestamp', '>=', start)
+                .where('timestamp', '<=', end)
+                .orderBy('timestamp', 'desc').get();
+
+            const attendanceByEmployee = {};
+            attendanceSnap.forEach(doc => {
+                const data = doc.data();
+                const uid = data.userId;
+                if (!attendanceByEmployee[uid]) attendanceByEmployee[uid] = {
+                    'حضور': null,
+                    'انصراف': null
+                };
+                if (data.type === 'حضور' && !attendanceByEmployee[uid]['حضور'])
+                    attendanceByEmployee[uid]['حضور'] = new Date(data.timestamp.toDate());
+                else if (data.type === 'انصراف' && !attendanceByEmployee[uid]['انصراف'])
+                    attendanceByEmployee[uid]['انصراف'] = new Date(data.timestamp.toDate());
+            });
+
+            attendanceTableBody.innerHTML = '';
+            if (Object.keys(attendanceByEmployee).length === 0) {
+                attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">لا توجد بيانات حضور لهذا اليوم.</td></tr>';
+            } else {
+                for (const uid in attendanceByEmployee) {
+                    const userData = usersData[uid] || { name: 'غير معروف' };
+                    const row = document.createElement('tr');
+                    const checkIn = attendanceByEmployee[uid]['حضور'];
+                    const checkOut = attendanceByEmployee[uid]['انصراف'];
+                    let totalHours = '-';
+                    if (checkIn && checkOut) {
+                        const diffMs = checkOut - checkIn;
+                        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+                        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                        totalHours = `${hours} ساعة و ${minutes} دقيقة`;
+                    }
+                    row.innerHTML = `
+                        <td data-label="اسم الموظف">${userData.name}</td>
+                        <td data-label="التاريخ">${date.toISOString().split('T')[0]}</td>
+                        <td data-label="وقت الحضور">${checkIn ? checkIn.toLocaleTimeString('ar-EG') : '-'}</td>
+                        <td data-label="وقت الانصراف">${checkOut ? checkOut.toLocaleTimeString('ar-EG') : '-'}</td>
+                        <td data-label="إجمالي ساعات العمل">${totalHours}</td>
+                    `;
+                    attendanceTableBody.appendChild(row);
+                }
+            }
+        }
+    </script>
 
 </body>
 </html>
