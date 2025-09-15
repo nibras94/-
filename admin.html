@@ -1,251 +1,76 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة إدارة الموظفين</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #007bff;
-            --secondary-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #007bff;
-            --bg-body: #eef1f5;
-            --bg-container: #ffffff;
-            --text-color: #333;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة إدارة الموظفين</title>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+<!-- خط عربي -->
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-        }
+<!-- Bootstrap 5 RTL -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
-        .container {
-            background-color: var(--bg-container);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
-        }
-
-        .container h2 {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            border-right: 4px solid var(--secondary-color);
-            padding-right: 10px;
-        }
-
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        #logout-btn {
-            background-color: var(--danger-color);
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-
-        #logout-btn:hover { background-color: #c82333; }
-
-        .form-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="date"],
-        select {
-            flex: 1 1 200px;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: 'Cairo', sans-serif;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            white-space: nowrap;
-        }
-
-        button:hover { transform: translateY(-2px); }
-
-        .btn-add { background-color: var(--secondary-color); color: #fff; }
-        .btn-add:hover { background-color: #218838; }
-
-        .btn-edit { background-color: var(--warning-color); color: var(--text-color); }
-        .btn-edit:hover { background-color: #e0a800; }
-
-        .btn-delete { background-color: var(--danger-color); color: #fff; }
-        .btn-delete:hover { background-color: #c82333; }
-
-        .btn-show { background-color: var(--info-color); color: #fff; }
-        .btn-show:hover { background-color: #0069d9; }
-
-        #employee-count {
-            background-color: #f0f2f5;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            color: #555;
-            margin-right: auto;
-        }
-
-        #employees-list {
-            margin-top: 20px;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .employee-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            border-right: 5px solid var(--primary-color);
-        }
-
-        .employee-item-actions { display: flex; gap: 10px; }
-
-        .attendance-controls {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        #prev-day, #next-day { background-color: #6c757d; color: #fff; }
-        #prev-day:hover, #next-day:hover { background-color: #5a6268; }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-            margin-top: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        th, td {
-            background-color: #fff;
-            padding: 15px;
-            text-align: right;
-        }
-
-        thead tr th {
-            background-color: #f0f2f5;
-            color: var(--primary-color);
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        tbody tr { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-        tbody tr:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-
-        @media (max-width: 768px) {
-            body { padding: 15px; }
-            .container { padding: 20px; }
-            .header-section { flex-direction: column-reverse; align-items: flex-start; gap: 15px; }
-            #logout-btn { width: 100%; text-align: center; }
-            .container h2 { font-size: 1.5rem; }
-            .form-group { flex-direction: column; }
-            input, select, button { width: 100%; }
-            .attendance-controls { flex-direction: column; }
-            #employee-count { width: 100%; text-align: center; margin-right: 0; }
-            table, thead, tbody, th, td, tr { display: block; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; }
-            tr { border: 1px solid #ccc; margin-bottom: 15px; border-radius: 12px; overflow: hidden; }
-            td { border: none; position: relative; padding-right: 50%; text-align: left; background: #fff; }
-            td:before {
-                position: absolute; top: 0; right: 0; width: 45%;
-                padding: 15px; white-space: nowrap; font-weight: bold;
-                content: attr(data-label); text-align: right; background: #f0f2f5;
-            }
-        }
-    </style>
+<style>
+    body { font-family: 'Cairo', sans-serif; background-color: #eef1f5; }
+    h2 { color: #007bff; border-right: 4px solid #28a745; padding-right: 10px; margin-bottom: 20px; }
+    #employee-count { font-weight: bold; margin-right: auto; }
+    .employee-item { padding: 15px; background: #f9f9f9; border-right: 5px solid #007bff; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .form-control:focus { box-shadow: 0 0 5px rgba(0,123,255,0.3); }
+    .attendance-controls button { margin-right: 5px; }
+</style>
 </head>
 <body oncontextmenu="return false;">
 
-    <div class="container">
-        <div class="header-section">
-            <h2>إدارة الموظفين 👨‍💼</h2>
-            <button id="logout-btn">تسجيل خروج 🚪</button>
-        </div>
-        <div class="form-group">
-            <input type="text" id="employee-name" placeholder="اسم الموظف">
-            <input type="email" id="employee-email" placeholder="البريد الإلكتروني">
-            <input type="password" id="employee-password" placeholder="كلمة المرور">
-            <select id="employee-role">
-                <option value="employee">موظف </option>
-                <option value="admin">مدير</option>
-            </select>
-            <button id="add-employee-btn" class="btn-add">إضافة موظف ➕</button>
-        </div>
-        <hr>
-        <h2>إدارة إحداثيات الموقع 📍</h2>
-        <div class="form-group">
-            <input type="text" id="office-latitude" placeholder="خط العرض (Latitude)">
-            <input type="text" id="office-longitude" placeholder="خط الطول (Longitude)">
-            <input type="number" id="proximity-radius" placeholder="نصف القطر المسموح به (متر)" value="50">
-            <button id="save-location-btn" class="btn-add">حفظ الإحداثيات</button>
-        </div>
-        <hr>
-        <div class="header-section">
-            <button id="show-employees-btn" class="btn-show">عرض الموظفين 📜</button>
-            <span id="employee-count"></span>
-        </div>
-        <div id="employees-list"></div>
+<div class="container my-4 p-4 bg-white rounded shadow">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+        <h2>إدارة الموظفين 👨‍💼</h2>
+        <button id="logout-btn" class="btn btn-danger">تسجيل خروج 🚪</button>
     </div>
 
-    <div class="container">
-        <h2>تقارير الحضور 📊</h2>
-        <div class="attendance-controls">
-            <button id="prev-day">◀ اليوم السابق</button>
-            <input type="date" id="date-filter">
-            <button id="next-day">اليوم التالي ▶</button>
-            <button id="filter-btn" class="btn-show">عرض التقرير</button>
+    <div class="row g-2 mb-3">
+        <div class="col-md-3"><input type="text" id="employee-name" class="form-control" placeholder="اسم الموظف"></div>
+        <div class="col-md-3"><input type="email" id="employee-email" class="form-control" placeholder="البريد الإلكتروني"></div>
+        <div class="col-md-3"><input type="password" id="employee-password" class="form-control" placeholder="كلمة المرور"></div>
+        <div class="col-md-2">
+            <select id="employee-role" class="form-select">
+                <option value="employee">موظف</option>
+                <option value="admin">مدير</option>
+            </select>
         </div>
-        <table id="attendance-table">
-            <thead>
+        <div class="col-md-1"><button id="add-employee-btn" class="btn btn-success w-100">إضافة ➕</button></div>
+    </div>
+
+    <hr>
+
+    <h2>إدارة إحداثيات الموقع 📍</h2>
+    <div class="row g-2 mb-3">
+        <div class="col-md-3"><input type="text" id="office-latitude" class="form-control" placeholder="خط العرض"></div>
+        <div class="col-md-3"><input type="text" id="office-longitude" class="form-control" placeholder="خط الطول"></div>
+        <div class="col-md-3"><input type="number" id="proximity-radius" class="form-control" placeholder="نصف القطر" value="50"></div>
+        <div class="col-md-3"><button id="save-location-btn" class="btn btn-success w-100">حفظ الإحداثيات</button></div>
+    </div>
+
+    <div class="d-flex align-items-center mb-3 flex-wrap">
+        <button id="show-employees-btn" class="btn btn-primary me-3 mb-2">عرض الموظفين 📜</button>
+        <span id="employee-count" class="mb-2"></span>
+    </div>
+
+    <div id="employees-list"></div>
+</div>
+
+<div class="container my-4 p-4 bg-white rounded shadow">
+    <h2>تقارير الحضور 📊</h2>
+    <div class="d-flex flex-wrap align-items-center mb-3 gap-2">
+        <button id="prev-day" class="btn btn-secondary">◀ اليوم السابق</button>
+        <input type="date" id="date-filter" class="form-control" style="max-width: 200px;">
+        <button id="next-day" class="btn btn-secondary">اليوم التالي ▶</button>
+        <button id="filter-btn" class="btn btn-info">عرض التقرير</button>
+    </div>
+
+    <div class="table-responsive">
+        <table id="attendance-table" class="table table-striped table-bordered">
+            <thead class="table-light">
                 <tr>
                     <th>اسم الموظف</th>
                     <th>التاريخ</th>
@@ -257,243 +82,218 @@
             <tbody></tbody>
         </table>
     </div>
+</div>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<!-- Firebase JS -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-    <script>
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('keydown', e => {
-            if (e.key === 'F12' || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-                e.preventDefault();
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.shiftKey && e.key === 'I')) e.preventDefault();
+});
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
+    authDomain: "attendance-system-65084.firebaseapp.com",
+    projectId: "attendance-system-65084",
+    storageBucket: "attendance-system-65084.firebasestorage.app",
+    messagingSenderId: "918305105898",
+    appId: "1:918305105898:web:94cf532638acdfbbc27493"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ✅ حماية صفحة الأدمن
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = "index.html"; return; }
+    const doc = await db.collection("users").doc(user.uid).get();
+    if (!doc.exists || doc.data().role !== "admin") {
+        alert("غير مصرح لك بالدخول 🚫");
+        window.location.href = "index.html";
+        return;
+    }
+
+    const logoutBtn = document.getElementById('logout-btn');
+    const saveLocationBtn = document.getElementById('save-location-btn');
+    const officeLatitudeInput = document.getElementById('office-latitude');
+    const officeLongitudeInput = document.getElementById('office-longitude');
+    const proximityRadiusInput = document.getElementById('proximity-radius');
+
+    saveLocationBtn.addEventListener('click', async () => {
+        const lat = officeLatitudeInput.value.trim();
+        const lon = officeLongitudeInput.value.trim();
+        const radius = proximityRadiusInput.value;
+        if (!lat || !lon || !radius) { alert('يرجى تعبئة جميع حقول الموقع.'); return; }
+        try {
+            await db.collection('settings').doc('office_location').set({
+                latitude: parseFloat(lat),
+                longitude: parseFloat(lon),
+                radius: parseInt(radius)
+            });
+            alert('تم حفظ إحداثيات الموقع بنجاح ✅');
+        } catch (err) { alert('خطأ في حفظ الإحداثيات: ' + err.message); }
+    });
+
+    async function getOfficeLocation() {
+        try {
+            const doc = await db.collection('settings').doc('office_location').get();
+            if (doc.exists) {
+                const data = doc.data();
+                officeLatitudeInput.value = data.latitude;
+                officeLongitudeInput.value = data.longitude;
+                proximityRadiusInput.value = data.radius;
             }
-        });
+        } catch (err) { console.error(err); }
+    }
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
-            authDomain: "attendance-system-65084.firebaseapp.com",
-            projectId: "attendance-system-65084",
-            storageBucket: "attendance-system-65084.firebasestorage.app",
-            messagingSenderId: "918305105898",
-            appId: "1:918305105898:web:94cf532638acdfbbc27493"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
 
-        // ✅ حماية صفحة الأدمن
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = "index.html";
-                return;
-            }
+    document.getElementById('add-employee-btn').addEventListener('click', async () => {
+        const name = document.getElementById('employee-name').value.trim();
+        const email = document.getElementById('employee-email').value.trim();
+        const password = document.getElementById('employee-password').value.trim();
+        const role = document.getElementById('employee-role').value;
+        if (!name || !email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
+        try {
+            const userCred = await auth.createUserWithEmailAndPassword(email, password);
+            await db.collection('users').doc(userCred.user.uid).set({
+                name, email, role, salary: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert('تم إضافة الموظف ✅');
+            document.getElementById('employee-name').value = '';
+            document.getElementById('employee-email').value = '';
+            document.getElementById('employee-password').value = '';
+            showEmployees();
+        } catch (err) { alert('خطأ: ' + err.message); }
+    });
 
-            const doc = await db.collection("users").doc(user.uid).get();
-            if (!doc.exists || doc.data().role !== "admin") {
-                alert("غير مصرح لك بالدخول 🚫");
-                window.location.href = "index.html";
-                return;
-            }
+    const employeesListDiv = document.getElementById('employees-list');
+    const employeeCountSpan = document.getElementById('employee-count');
+    document.getElementById('show-employees-btn').addEventListener('click', () => {
+        if (employeesListDiv.style.display === 'flex') employeesListDiv.style.display = 'none';
+        else showEmployees();
+    });
 
-            // 🔽 هنا الكود الأصلي (بدون أي حذف)
-            const logoutBtn = document.getElementById('logout-btn');
-            const saveLocationBtn = document.getElementById('save-location-btn');
-            const officeLatitudeInput = document.getElementById('office-latitude');
-            const officeLongitudeInput = document.getElementById('office-longitude');
-            const proximityRadiusInput = document.getElementById('proximity-radius');
+    async function showEmployees() {
+        const snapshot = await db.collection('users').get();
+        employeesListDiv.innerHTML = '';
+        employeeCountSpan.textContent = `عدد الموظفين: ${snapshot.size}`;
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            const div = document.createElement('div');
+            div.className = 'employee-item';
+            div.innerHTML = `
+                <span>${user.name} (${user.email}) - الدور: ${user.role}</span>
+                <div class="employee-item-actions">
+                    <button class="btn btn-warning btn-sm me-1">تعديل</button>
+                    <button class="btn btn-danger btn-sm">حذف</button>
+                </div>`;
+            const editBtn = div.querySelector('.btn-warning');
+            const delBtn = div.querySelector('.btn-danger');
 
-            saveLocationBtn.addEventListener('click', async () => {
-                const lat = officeLatitudeInput.value.trim();
-                const lon = officeLongitudeInput.value.trim();
-                const radius = proximityRadiusInput.value;
-                if (!lat || !lon || !radius) { alert('يرجى تعبئة جميع حقول الموقع.'); return; }
-                try {
-                    await db.collection('settings').doc('office_location').set({
-                        latitude: parseFloat(lat),
-                        longitude: parseFloat(lon),
-                        radius: parseInt(radius)
-                    });
-                    alert('تم حفظ إحداثيات الموقع بنجاح ✅');
-                } catch (err) { alert('خطأ في حفظ الإحداثيات: ' + err.message); }
+            editBtn.addEventListener('click', async () => {
+                const newName = prompt("ادخل الاسم الجديد:", user.name);
+                if (newName) await db.collection('users').doc(doc.id).update({ name: newName });
+                const newPassword = prompt("ادخل كلمة مرور جديدة (اتركه فارغ إذا لا تريد التغيير):");
+                if (newPassword) {
+                    const userForUpdate = firebase.auth().currentUser;
+                    if (userForUpdate && userForUpdate.email === user.email) {
+                        userForUpdate.updatePassword(newPassword)
+                            .then(() => alert('تم تحديث كلمة المرور.'))
+                            .catch(e => console.log(e));
+                    } else { alert("لا يمكنك تحديث كلمة مرور مستخدم آخر مباشرة."); }
+                }
+                showEmployees();
             });
 
-            async function getOfficeLocation() {
-                try {
-                    const doc = await db.collection('settings').doc('office_location').get();
-                    if (doc.exists) {
-                        const data = doc.data();
-                        officeLatitudeInput.value = data.latitude;
-                        officeLongitudeInput.value = data.longitude;
-                        proximityRadiusInput.value = data.radius;
-                    }
-                } catch (err) { console.error("خطأ في جلب إحداثيات الموقع:", err); }
-            }
-
-            logoutBtn.addEventListener('click', () => auth.signOut().then(() => window.location.href = 'index.html'));
-
-            document.getElementById('add-employee-btn').addEventListener('click', async () => {
-                const name = document.getElementById('employee-name').value.trim();
-                const email = document.getElementById('employee-email').value.trim();
-                const password = document.getElementById('employee-password').value.trim();
-                const role = document.getElementById('employee-role').value;
-                if (!name || !email || !password) { alert('يرجى تعبئة جميع الحقول'); return; }
-                try {
-                    const userCred = await auth.createUserWithEmailAndPassword(email, password);
-                    await db.collection('users').doc(userCred.user.uid).set({
-                        name, email, role, salary: 0,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    alert('تم إضافة الموظف ✅');
-                    document.getElementById('employee-name').value = '';
-                    document.getElementById('employee-email').value = '';
-                    document.getElementById('employee-password').value = '';
+            delBtn.addEventListener('click', async () => {
+                if (confirm(`هل تريد حذف الموظف ${user.name}؟`)) {
+                    await db.collection('users').doc(doc.id).delete();
                     showEmployees();
-                } catch (err) { alert('خطأ: ' + err.message); }
-            });
-
-            const employeesListDiv = document.getElementById('employees-list');
-            const employeeCountSpan = document.getElementById('employee-count');
-            document.getElementById('show-employees-btn').addEventListener('click', () => {
-                if (employeesListDiv.style.display === 'flex') employeesListDiv.style.display = 'none';
-                else showEmployees();
-            });
-
-            async function showEmployees() {
-                const snapshot = await db.collection('users').get();
-                employeesListDiv.innerHTML = '';
-                employeeCountSpan.textContent = `عدد الموظفين: ${snapshot.size}`;
-                snapshot.forEach(doc => {
-                    const user = doc.data();
-                    const div = document.createElement('div');
-                    div.className = 'employee-item';
-                    div.innerHTML = `
-                        <span>${user.name} (${user.email}) - الدور: ${user.role}</span>
-                        <div class="employee-item-actions">
-                            <button class="btn-edit">تعديل</button>
-                            <button class="btn-delete">حذف</button>
-                        </div>`;
-                    const editBtn = div.querySelector('.btn-edit');
-                    const delBtn = div.querySelector('.btn-delete');
-
-                    editBtn.addEventListener('click', async () => {
-                        const newName = prompt("ادخل الاسم الجديد:", user.name);
-                        if (newName) await db.collection('users').doc(doc.id).update({ name: newName });
-                        const newPassword = prompt("ادخل كلمة مرور جديدة (اتركه فارغ إذا لا تريد التغيير):");
-                        if (newPassword) {
-                            const userForUpdate = firebase.auth().currentUser;
-                            if (userForUpdate && userForUpdate.email === user.email) {
-                                userForUpdate.updatePassword(newPassword)
-                                    .then(() => alert('تم تحديث كلمة المرور.'))
-                                    .catch(e => console.log(e));
-                            } else {
-                                alert("لا يمكنك تحديث كلمة مرور مستخدم آخر مباشرة بهذه الطريقة.");
-                            }
-                        }
-                        showEmployees();
-                    });
-
-                    delBtn.addEventListener('click', async () => {
-                        if (confirm(`هل تريد حذف الموظف ${user.name}؟`)) {
-                            await db.collection('users').doc(doc.id).delete();
-                            showEmployees();
-                        }
-                    });
-
-                    employeesListDiv.appendChild(div);
-                });
-                employeesListDiv.style.display = 'flex';
-            }
-
-            const attendanceTableBody = document.querySelector('#attendance-table tbody');
-            const dateFilterInput = document.getElementById('date-filter');
-            const filterBtn = document.getElementById('filter-btn');
-            const prevDayBtn = document.getElementById('prev-day');
-            const nextDayBtn = document.getElementById('next-day');
-
-            let selectedDate = new Date();
-            function updateDateInput() {
-                dateFilterInput.value = selectedDate.toISOString().split('T')[0];
-            }
-
-            window.addEventListener('load', () => {
-                getOfficeLocation();
-                updateDateInput();
-                fetchReports(selectedDate);
-            });
-
-            prevDayBtn.addEventListener('click', () => {
-                selectedDate.setDate(selectedDate.getDate() - 1);
-                updateDateInput();
-                fetchReports(selectedDate);
-            });
-            nextDayBtn.addEventListener('click', () => {
-                selectedDate.setDate(selectedDate.getDate() + 1);
-                updateDateInput();
-                fetchReports(selectedDate);
-            });
-            filterBtn.addEventListener('click', () => {
-                const dateVal = new Date(dateFilterInput.value);
-                if (dateVal) {
-                    selectedDate = dateVal;
-                    fetchReports(selectedDate);
                 }
             });
 
-            async function fetchReports(date) {
-                attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">جارٍ تحميل البيانات...</td></tr>';
-                const usersSnap = await db.collection('users').get();
-                const usersData = {};
-                usersSnap.forEach(doc => usersData[doc.id] = doc.data());
-
-                const start = new Date(date); start.setHours(0, 0, 0, 0);
-                const end = new Date(date); end.setHours(23, 59, 59, 999);
-
-                const attendanceSnap = await db.collection('attendance_log')
-                    .where('timestamp', '>=', start)
-                    .where('timestamp', '<=', end)
-                    .orderBy('timestamp', 'desc').get();
-
-                const attendanceByEmployee = {};
-                attendanceSnap.forEach(doc => {
-                    const data = doc.data();
-                    const uid = data.userId;
-                    if (!attendanceByEmployee[uid]) attendanceByEmployee[uid] = { 'حضور': null, 'انصراف': null };
-                    if (data.type === 'حضور' && !attendanceByEmployee[uid]['حضور'])
-                        attendanceByEmployee[uid]['حضور'] = new Date(data.timestamp.toDate());
-                    else if (data.type === 'انصراف' && !attendanceByEmployee[uid]['انصراف'])
-                        attendanceByEmployee[uid]['انصراف'] = new Date(data.timestamp.toDate());
-                });
-
-                attendanceTableBody.innerHTML = '';
-                if (Object.keys(attendanceByEmployee).length === 0) {
-                    attendanceTableBody.innerHTML = '<tr><td colspan="5" data-label="الحالة">لا توجد بيانات حضور لهذا اليوم.</td></tr>';
-                } else {
-                    for (const uid in attendanceByEmployee) {
-                        const userData = usersData[uid] || { name: 'غير معروف' };
-                        const row = document.createElement('tr');
-                        const checkIn = attendanceByEmployee[uid]['حضور'];
-                        const checkOut = attendanceByEmployee[uid]['انصراف'];
-                        let totalHours = '-';
-                        if (checkIn && checkOut) {
-                            const diffMs = checkOut - checkIn;
-                            const hours = Math.floor(diffMs / (1000 * 60 * 60));
-                            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                            totalHours = `${hours} ساعة و ${minutes} دقيقة`;
-                        }
-                        row.innerHTML = `
-                            <td data-label="اسم الموظف">${userData.name}</td>
-                            <td data-label="التاريخ">${date.toISOString().split('T')[0]}</td>
-                            <td data-label="وقت الحضور">${checkIn ? checkIn.toLocaleTimeString('ar-EG') : '-'}</td>
-                            <td data-label="وقت الانصراف">${checkOut ? checkOut.toLocaleTimeString('ar-EG') : '-'}</td>
-                            <td data-label="إجمالي ساعات العمل">${totalHours}</td>
-                        `;
-                        attendanceTableBody.appendChild(row);
-                    }
-                }
-            }
+            employeesListDiv.appendChild(div);
         });
-    </script>
+        employeesListDiv.style.display = 'flex';
+    }
+
+    const attendanceTableBody = document.querySelector('#attendance-table tbody');
+    const dateFilterInput = document.getElementById('date-filter');
+    const filterBtn = document.getElementById('filter-btn');
+    const prevDayBtn = document.getElementById('prev-day');
+    const nextDayBtn = document.getElementById('next-day');
+
+    let selectedDate = new Date();
+    function updateDateInput() { dateFilterInput.value = selectedDate.toISOString().split('T')[0]; }
+
+    window.addEventListener('load', () => { getOfficeLocation(); updateDateInput(); fetchReports(selectedDate); });
+
+    prevDayBtn.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() - 1); updateDateInput(); fetchReports(selectedDate); });
+    nextDayBtn.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() + 1); updateDateInput(); fetchReports(selectedDate); });
+    filterBtn.addEventListener('click', () => {
+        const dateVal = new Date(dateFilterInput.value);
+        if (dateVal) { selectedDate = dateVal; fetchReports(selectedDate); }
+    });
+
+    async function fetchReports(date) {
+        attendanceTableBody.innerHTML = '<tr><td colspan="5">جارٍ تحميل البيانات...</td></tr>';
+        const usersSnap = await db.collection('users').get();
+        const usersData = {};
+        usersSnap.forEach(doc => usersData[doc.id] = doc.data());
+
+        const start = new Date(date); start.setHours(0,0,0,0);
+        const end = new Date(date); end.setHours(23,59,59,999);
+
+        const attendanceSnap = await db.collection('attendance_log')
+            .where('timestamp', '>=', start)
+            .where('timestamp', '<=', end)
+            .orderBy('timestamp', 'desc').get();
+
+        const attendanceByEmployee = {};
+        attendanceSnap.forEach(doc => {
+            const data = doc.data();
+            const uid = data.userId;
+            if (!attendanceByEmployee[uid]) attendanceByEmployee[uid] = { 'حضور': null, 'انصراف': null };
+            if (data.type === 'حضور' && !attendanceByEmployee[uid]['حضور'])
+                attendanceByEmployee[uid]['حضور'] = new Date(data.timestamp.toDate());
+            else if (data.type === 'انصراف' && !attendanceByEmployee[uid]['انصراف'])
+                attendanceByEmployee[uid]['انصراف'] = new Date(data.timestamp.toDate());
+        });
+
+        attendanceTableBody.innerHTML = '';
+        if (Object.keys(attendanceByEmployee).length === 0) {
+            attendanceTableBody.innerHTML = '<tr><td colspan="5">لا توجد بيانات حضور لهذا اليوم.</td></tr>';
+        } else {
+            for (const uid in attendanceByEmployee) {
+                const userData = usersData[uid] || { name: 'غير معروف' };
+                const row = document.createElement('tr');
+                const checkIn = attendanceByEmployee[uid]['حضور'];
+                const checkOut = attendanceByEmployee[uid]['انصراف'];
+                let totalHours = '-';
+                if (checkIn && checkOut) {
+                    const diffMs = checkOut - checkIn;
+                    const hours = Math.floor(diffMs / (1000*60*60));
+                    const minutes = Math.floor((diffMs % (1000*60*60)) / (1000*60));
+                    totalHours = `${hours} ساعة و ${minutes} دقيقة`;
+                }
+                row.innerHTML = `
+                    <td>${userData.name}</td>
+                    <td>${date.toISOString().split('T')[0]}</td>
+                    <td>${checkIn ? checkIn.toLocaleTimeString('ar-EG') : '-'}</td>
+                    <td>${checkOut ? checkOut.toLocaleTimeString('ar-EG') : '-'}</td>
+                    <td>${totalHours}</td>
+                `;
+                attendanceTableBody.appendChild(row);
+            }
+        }
+    }
+});
+</script>
 </body>
 </html>
