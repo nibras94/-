@@ -4,236 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل الدخول</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Bootstrap RTL CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #007bff;
-            --secondary-color: #0a3d62;
-            --bg-body: #eef1f5;
-            --bg-container: #ffffff;
-            --text-color: #333;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-body);
+            background-color: #f0f2f5;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
         }
 
-        .container {
-            background-color: var(--bg-container);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            width: 90%;
+        .login-container {
             max-width: 400px;
-            animation: fadeIn 0.8s ease-in-out;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            bottom: -10px;
-            left: -10px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 20px;
-            filter: blur(20px);
-            opacity: 0.1;
-            z-index: -1;
-            transition: opacity 0.5s ease;
-        }
-        
-        .container:hover::before {
-            opacity: 0.2;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            width: 100%;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         h2 {
-            font-size: 2rem;
-            color: var(--secondary-color);
-            margin-bottom: 25px;
-            position: relative;
+            margin-bottom: 30px;
+            color: #007bff;
+            text-align: center;
         }
 
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            right: 50%;
-            transform: translateX(50%);
-            width: 60px;
-            height: 4px;
-            background-color: var(--primary-color);
-            border-radius: 2px;
+        input.form-control {
+            direction: rtl; /* توحيد اتجاه النص */
+            text-align: right; /* محاذاة النص للجانب الأيمن */
         }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            font-family: 'Cairo', sans-serif;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+        button.btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
             font-weight: bold;
-            font-family: 'Cairo', sans-serif;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        button:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        #error-message {
-            color: #dc3545;
-            margin-top: -10px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: none;
+        button.btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="login-container">
         <h2>تسجيل الدخول</h2>
         <form id="login-form">
-            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
-            <input type="password" id="password" placeholder="كلمة المرور" required>
-            <div id="error-message"></div>
-            <button type="submit">دخول</button>
+            <div class="mb-3">
+                <input type="email" id="email" class="form-control" placeholder="البريد الإلكتروني" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" id="password" class="form-control" placeholder="كلمة المرور" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">دخول</button>
         </form>
     </div>
+
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
-            authDomain: "attendance-system-65084.firebaseapp.com",
-            projectId: "attendance-system-65084",
-            storageBucket: "attendance-system-65084.firebasestorage.app",
-            messagingSenderId: "918305105898",
-            appId: "1:918305105898:web:94cf532638acdfbbc27493"
+          apiKey: "AIzaSyDLAF7NllObxnciIdRXlKe_BrFJE5sKHHE",
+          authDomain: "attendance-system-65084.firebaseapp.com",
+          projectId: "attendance-system-65084",
+          storageBucket: "attendance-system-65084.firebasestorage.app",
+          messagingSenderId: "918305105898",
+          appId: "1:918305105898:web:94cf532638acdfbbc27493"
         };
         firebase.initializeApp(firebaseConfig);
-        const loginForm = document.getElementById('login-form');
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const errorMessageDiv = document.getElementById('error-message');
 
-        // وظيفة لتوليد رمز فريد
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0,
-                    v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
+        const loginForm = document.getElementById('login-form');
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = loginForm['email'].value;
             const password = loginForm['password'].value;
-            errorMessageDiv.style.display = 'none';
-
             try {
                 const res = await auth.signInWithEmailAndPassword(email, password);
                 const user = res.user;
                 const doc = await db.collection('users').doc(user.uid).get();
-
-                if (doc.exists) {
-                    const userData = doc.data();
-                    let currentDeviceToken = localStorage.getItem('deviceToken');
-
-                    // إذا لم يكن هناك رمز مخزن في الجهاز
-                    if (!currentDeviceToken) {
-                        currentDeviceToken = generateUUID();
-                        localStorage.setItem('deviceToken', currentDeviceToken);
-                    }
-
-                    // التحقق من وجود رمز في قاعدة البيانات
-                    if (!userData.deviceToken) {
-                        // لأول مرة: ربط الرمز بالجهاز
-                        await db.collection('users').doc(user.uid).update({
-                            deviceToken: currentDeviceToken
-                        });
-                        console.log("تم ربط الحساب بهذا الجهاز.");
-                    } else if (userData.deviceToken !== currentDeviceToken) {
-                        // إذا كان الرمز مختلفًا: رفض الدخول
-                        errorMessageDiv.textContent = 'هذا الحساب مفتوح بالفعل على جهاز آخر. يرجى تسجيل الدخول من الجهاز الأصلي.';
-                        errorMessageDiv.style.display = 'block';
-                        await auth.signOut();
-                        return;
-                    }
-
-                    // التوجيه بناءً على الدور
-                    if (userData.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'employee.html';
-                    }
-
+                const userData = doc.data();
+                if (userData.role === 'admin') {
+                    window.location.href = 'admin.html';
                 } else {
-                    errorMessageDiv.textContent = 'بيانات المستخدم غير موجودة.';
-                    errorMessageDiv.style.display = 'block';
-                    await auth.signOut();
+                    window.location.href = 'employee.html';
                 }
             } catch (error) {
-                let message = 'حدث خطأ. يرجى المحاولة مرة أخرى.';
-                switch (error.code) {
-                    case 'auth/wrong-password':
-                        message = 'كلمة المرور خاطئة.';
-                        break;
-                    case 'auth/user-not-found':
-                        message = 'البريد الإلكتروني غير مسجل.';
-                        break;
-                    case 'auth/invalid-email':
-                        message = 'صيغة البريد الإلكتروني غير صحيحة.';
-                        break;
-                    default:
-                        message = 'حدث خطأ غير معروف. يرجى المحاولة مرة أخرى.';
-                }
-                errorMessageDiv.textContent = message;
-                errorMessageDiv.style.display = 'block';
+                alert(error.message);
             }
         });
     </script>
